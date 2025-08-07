@@ -1,0 +1,33 @@
+@startuml Module2Project
+    class table{
+        Integer tableNumber
+        Integer capacity
+        Boolean isOccupied 
+    }
+    class MenuItem{
+
+    }
+
+    class OrderItem{
+
+    }
+
+    enum OrdenStatus{
+        PENDING
+        IN_PROGRESS
+        DELIVERED
+    }
+
+    class Employee{
+        String name
+
+        Employee(String name)
+        String getName()
+    }
+
+    Restaurant o-- Table
+    Restaurant o-- Employee
+    Restaurant o-- Menu
+    Table -- Order
+    Menu *-- MenuItem
+@enduml
