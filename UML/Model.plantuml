@@ -1,0 +1,52 @@
+@startuml modelSystemUser
+
+enum Rol {
+  ADMINISTRATOR
+  STANDARD
+}
+
+class System{
+    User[] users
+}
+
+class User {
+  String id
+  String fullname
+  String username
+  String password
+  Rol rol
+  Event[] events
+}
+
+class Action{
+    String description
+}
+
+class Event{
+    Action action
+    Long currentDate
+}
+
+class Administrator{
+
+}
+
+class Standard{
+
+}
+
+class Autentication {
+  User user
+}
+
+' Relaciones
+System *-- User
+Action o-- Event
+Event o-- User
+User <|-- Administrator
+User <|-- Standard
+Autentication -- System
+Rol --> User : tipo
+
+
+@enduml
