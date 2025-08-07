@@ -1,33 +1,52 @@
-@startuml Module2Project
-    class table{
-        Integer tableNumber
-        Integer capacity
-        Boolean isOccupied 
-    }
-    class MenuItem{
+@startuml modelSystemUser
 
-    }
+enum Rol {
+  ADMINISTRATOR
+  STANDARD
+}
 
-    class OrderItem{
+class System{
+    User[] users
+}
 
-    }
+class User {
+  String id
+  String fullname
+  String username
+  String password
+  Rol rol
+  Event[] events
+}
 
-    enum OrdenStatus{
-        PENDING
-        IN_PROGRESS
-        DELIVERED
-    }
+class Action{
+    String description
+}
 
-    class Employee{
-        String name
+class Event{
+    Action action
+    Long currentDate
+}
 
-        Employee(String name)
-        String getName()
-    }
+class Administrator{
 
-    Restaurant o-- Table
-    Restaurant o-- Employee
-    Restaurant o-- Menu
-    Table -- Order
-    Menu *-- MenuItem
+}
+
+class Standard{
+
+}
+
+class Autentication {
+  User user
+}
+
+' Relaciones
+System *-- User
+Action o-- Event
+Event o-- User
+User <|-- Administrator
+User <|-- Standard
+Autentication -- System
+Rol --> User : tipo
+
+
 @enduml
