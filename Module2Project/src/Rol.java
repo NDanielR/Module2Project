@@ -1,4 +1,4 @@
 public enum Rol {
-    ADMINISTRATOR, STANDARD;
-
+    ADMINISTRATOR,
+    STANDARD;
 }
