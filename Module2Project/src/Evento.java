@@ -3,42 +3,14 @@ import java.time.format.DateTimeFormatter;
 
 public class Evento {
 
-    public static final int INICIOSESION = 1;
-    public static final int CERRARSESION = 2;
-    public static final int ACTUALIZOUSUARIO = 3;
-    public static final int BORROUSUARIO = 4;
-
     private String name;
     private String description;
     private LocalDateTime instant;
 
-    public Evento(int tipoEvento){
-
+    public Evento(String name, String description){
         this.instant = LocalDateTime.now();
-       
-        switch (tipoEvento) {
-            case INICIOSESION:
-                this.name = "Inicio de Sesion";
-                this.description = "El usuario inicio sesion";
-                break;
-
-            case CERRARSESION:
-                this.name = "Cierre de Sesion";
-                this.description = "El usuario cerro la sesion";
-
-            case ACTUALIZOUSUARIO:
-                this.name = "Actualizacion del usuario";
-                this.description = "Se modificaron datos del usuario";
-
-            case BORROUSUARIO:
-                this.name = "Borrado de usuario";
-                this.description = "Se elimino un usuario desde esta cuenta";
-        
-            default:
-                this.name = "error";
-                this.description = "error";
-                break;
-        }
+        this.name = name;
+        this.description = description;
     }
     
     public String getName() {

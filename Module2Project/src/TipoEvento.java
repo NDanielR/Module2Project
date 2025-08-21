@@ -1,0 +1,7 @@
+public enum TipoEvento {
+
+    INICIOSESION,
+    CERRARSESION,
+    ACTUALIZOUSUARIO,
+    BORROUSUARIO;
+}
