@@ -15,6 +15,22 @@ public class Usuario {
         this.rol = rol;
     }
 
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getFullName() {
         return fullName;
     }
@@ -41,6 +57,9 @@ public class Usuario {
         System.out.println("--------------------------------------------------------------------------");
         int i = 1;
         for (Evento evento : history) {
+            if (evento == null) {
+                continue;
+            }
             System.out.printf("%-5d%s%n", i++, evento.toString());
         }
     }
@@ -59,5 +78,10 @@ public class Usuario {
         if (!agregado) {
             System.out.println("No se pudo agregar el evento. El historial está lleno.");
         }
+    }
+
+    @Override
+    public String toString(){
+        return getUserName();
     }
 }

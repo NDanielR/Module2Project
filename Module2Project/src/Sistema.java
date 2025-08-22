@@ -3,22 +3,141 @@ public class Sistema {
     private Usuario[] usuarios = new Usuario[50];
     private Menu menu = new Menu();
 
-    public void registerUser(Usuario nuevoUsuario) {
+    public Sistema() {
+        registerUser(userMaster());
+    }
+
+    public void mainMenu(Usuario user) {
+        boolean close = false;
+        int option = 0;
+
+        while (!close) {
+            if (user.getRol() == Rol.ADMINISTRATOR) {
+                System.out.println("menu de usuario administrador");
+                option = menu.menuAdm();
+            } else if (user.getRol() == Rol.STANDARD) {
+                System.out.println("menu de usuario standard");
+                option = menu.menuStandard();
+            }
+            close = option(option, user);
+        }
+
+    }
+
+    private boolean option(int option, Usuario user) {
+        boolean bucle = false;
+
+        switch (option) {
+            case 1:
+                user.viewHistory();
+                menu.clearConsole();
+                bucle = false;
+                break;
+
+            case 2:
+                modifyUser(user);
+                menu.clearConsole();
+                bucle = false;
+                break;
+
+            case 3:
+                borrarPorId(option);
+                menu.clearConsole();
+                bucle = false;
+                break;
+
+            case 4:
+                bucle = true;
+            break;
+            
+            default:
+                System.out.println("opcion invalida.");
+                menu.clearConsole();
+                break;
+        }
+
+        return bucle;
+    }
+
+    public void addUser() {
+
+        boolean confirmation = registerUser(menu.userInformation());
+
+        if (confirmation) {
+            System.out.println("usuario agregado");
+        } else {
+            System.out.println("no fue posible agregar el usuario");
+            System.out.println("no se pudo agregar usuario memoria llena");
+        }
+    }
+
+    public void printListUser() {
+        for (Usuario usuario : usuarios) {
+            if (usuario == null)
+                continue;
+            System.out.println(usuario.toString());
+        }
+    }
+
+    public Usuario signIn() {
+        final int MAX_ATTEMPTS = 3;
+        int attempts = 0;
+
+        while (attempts < MAX_ATTEMPTS) {
+            String userName = menu.enterUserName();
+            String password = menu.enterPassword();
+
+            boolean userFound = false;
+
+            for (Usuario user : usuarios) {
+                if (user == null)
+                    continue;
+
+                boolean sameUser = user.getUserName() != null && user.getUserName().equals(userName);
+
+                if (sameUser) {
+                    userFound = true;
+                    if (user.getPassword() != null && user.getPassword().equals(password)) {
+                        System.out.println("Inicio de sesión exitoso.");
+                        user.addEvent(createEvento(TipoEvento.INICIOSESION));
+                        return user;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            attempts++;
+
+            if (!userFound) {
+                System.out.println("Usuario no encontrado.");
+            } else {
+                System.out.println("Contraseña incorrecta.");
+            }
+            System.out.printf("Intentos restantes: %d%n", (MAX_ATTEMPTS - attempts));
+        }
+
+        System.out.println("Número de intentos alcanzados. Adiós.");
+        return null;
+    }
+
+    public void setUser(int index, Usuario user) {
+        usuarios[index] = user;
+    }
+
+    private boolean registerUser(Usuario nuevoUsuario) {
         boolean isAdd = false;
 
         for (int i = 0; i < usuarios.length; i++) {
             if (usuarios[i] == null) {
                 usuarios[i] = nuevoUsuario;
-                System.out.println("usuario agregado");
                 nuevoUsuario.addEvent(createEvento(TipoEvento.INICIOSESION));
                 isAdd = true;
                 break;
             }
         }
 
-        if (!isAdd) {
-            System.out.println("no se pudo agregar usuario memoria llena");
-        }
+        return isAdd;
     }
 
     private Evento createEvento(TipoEvento tipoEvento) {
@@ -41,57 +160,51 @@ public class Sistema {
         }
     }
 
-    public boolean signIn() {
-        final int MAX_ATTEMPTS = 3;
-        int attempts = 0;
+    private Usuario userMaster() {
+        return new Usuario("administrador", 1000, "admi", "1234", Rol.STANDARD);
+    }
 
-        while (attempts < MAX_ATTEMPTS) {
-            String userName = menu.enterUserName();
-            String password = menu.enterPassword();
+    private void modifyUser(Usuario user) {
 
-            boolean userFound = false;
+        int option = menu.menuModifyUser();
 
-            for (Usuario user : usuarios) {
-                if (user == null)
-                    continue;
+        switch (option) {
+            case 1:
+                user.setFullName(menu.cambiarNombre());
+                user.addEvent(createEvento(TipoEvento.ACTUALIZOUSUARIO));
+                break;
 
-                boolean sameUser = user.getUserName() != null && user.getUserName().equals(userName);
+            case 2:
+                user.setId(menu.cambiarId());
+                user.addEvent(createEvento(TipoEvento.ACTUALIZOUSUARIO));
+                break;
 
-                if (sameUser) {
-                    userFound = true;
-                    if (user.getPassword() != null && user.getPassword().equals(password)) {
-                        System.out.println("Inicio de sesión exitoso.");
-                        user.addEvent(createEvento(TipoEvento.INICIOSESION));
-                        return true;
-                    } else {
-                        break;
-                    }
-                }
-            }
+            case 3:
+                user.setUserName(menu.cambiarUsername());
+                user.addEvent(createEvento(TipoEvento.ACTUALIZOUSUARIO));
+                break;
 
-            attempts++;
+            case 4:
+                user.setPassword(menu.cambiarPassword());
+                user.addEvent(createEvento(TipoEvento.ACTUALIZOUSUARIO));
+                break;
 
-            if (!userFound) {
-                System.out.println("Usuario no encontrado.");
-            } else {
-                System.out.println("Contraseña incorrecta.");
-            }
-            System.out.printf("Intentos restantes: %d%n", (MAX_ATTEMPTS - attempts));
+            default:
+                System.out.println("opcion no valida");
+                break;
         }
 
-        System.out.println("Número de intentos alcanzados. Adiós.");
+    }
+
+    private boolean borrarPorId(int id) {
+        for (int i = 0; i < usuarios.length; i++) {
+            Usuario u = usuarios[i];
+            if (u != null && u.getId() != null && u.getId() == id) {
+                usuarios[i] = null;
+                return true;
+            }
+        }
         return false;
     }
 
-    public void setUser (int index, Usuario user){
-        usuarios[index] = user;
-    }
-
-    public Usuario[] getUsuarios() {
-        return usuarios;
-    }
-
-    public void setUsuarios(Usuario[] usuarios) {
-        this.usuarios = usuarios;
-    }
 }
