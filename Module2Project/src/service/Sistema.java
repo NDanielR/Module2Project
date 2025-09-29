@@ -168,8 +168,10 @@ public class Sistema {
 
             if (!userFound) {
                 System.out.println("Usuario no encontrado.");
+                menu.clearConsole();
             } else {
                 System.out.println("Contraseña incorrecta.");
+                menu.clearConsole();
             }
             System.out.printf("Intentos restantes: %d%n", (MAX_ATTEMPTS - attempts));
         }
