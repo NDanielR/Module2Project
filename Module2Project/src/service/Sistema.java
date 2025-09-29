@@ -46,21 +46,25 @@ public class Sistema {
 
             switch (option) {
                 case 1:
+                    //historial OK
                     user.viewHistory();
                     menu.clearConsole();
                     break;
 
                 case 2:
+                    // actualizar datos usuario OK
                     modifyUser(user);
                     menu.clearConsole();
                     break;
 
                 case 3:
+                    //buscar usuario OK
                     printListUser();
                     menu.clearConsole();
                     break;
 
                 case 4:
+                    //agregar usuario OK
                     if (admin) {
                         addUser();
                         user.addEvent(createEvento(TipoEvento.CREARUSUARIO));
@@ -71,7 +75,7 @@ public class Sistema {
                     }
                     break;
 
-                case 5:
+                case 5://TODO: VERIFICAR SI FUNCIONA
                     if (admin) {
                         borrarPorId(menu.menuEliminarUser());
                         user.addEvent(createEvento(TipoEvento.BORROUSUARIO));
@@ -82,7 +86,7 @@ public class Sistema {
                     }
                     break;
 
-                case 6:
+                case 6://TODO: NO FUNCIONA FALTA SELECCIONAR Y MODIFICAR
                     if (admin) {
                         modifyUser(null);
                         menu.clearConsole();
@@ -91,7 +95,7 @@ public class Sistema {
                     }
                     break;
 
-                case 7: 
+                case 7: //SALIR
                     if (admin) {
                         user.addEvent(createEvento(TipoEvento.CERRARSESION));
                         return false; 
@@ -99,7 +103,7 @@ public class Sistema {
                     System.out.println("Opción inválida.");
                     break;
 
-                case 8:
+                case 8://CERRAR APP
                     if (admin) {
                         user.addEvent(createEvento(TipoEvento.CERRARSESION));
                         return true;
