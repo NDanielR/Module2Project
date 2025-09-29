@@ -1,3 +1,10 @@
+package service;
+import model.Evento;
+import model.Rol;
+import model.TipoEvento;
+import model.Usuario;
+import ui.Menu;
+
 public class Sistema {
 
     private Usuario[] usuarios = new Usuario[50];

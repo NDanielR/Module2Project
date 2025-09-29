@@ -1,4 +1,8 @@
+package ui;
 import java.util.Scanner;
+
+import model.Rol;
+import model.Usuario;
 
 public class Menu {
 
