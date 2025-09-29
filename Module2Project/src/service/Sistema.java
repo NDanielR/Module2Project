@@ -86,7 +86,7 @@ public class Sistema {
                     }
                     break;
 
-                case 6://TODO: NO FUNCIONA FALTA SELECCIONAR Y MODIFICAR
+                case 6://FIXME: NO FUNCIONA FALTA SELECCIONAR Y MODIFICAR
                     if (admin) {
                         modifyUser(null);
                         menu.clearConsole();
