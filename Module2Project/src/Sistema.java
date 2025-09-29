@@ -7,56 +7,105 @@ public class Sistema {
         registerUser(userMaster());
     }
 
-    public void mainMenu(Usuario user) {
-        boolean close = false;
-        int option = 0;
+    public void start() {
 
-        while (!close) {
-            if (user.getRol() == Rol.ADMINISTRATOR) {
-                System.out.println("menu de usuario administrador");
-                option = menu.menuAdm();
-            } else if (user.getRol() == Rol.STANDARD) {
-                System.out.println("menu de usuario standard");
-                option = menu.menuStandard();
+        menu.clearConsole();
+
+        while (true) {
+            boolean goLogin = menu.messengerWelcome(); 
+            if (!goLogin) {
+                System.out.println("Saliendo de la aplicación...");
+                return;
             }
-            close = option(option, user);
-        }
 
+            Usuario user = signIn();
+            if (user == null) {
+                continue;
+            }
+
+            boolean exitApp = mainMenu(user); 
+            if (exitApp) {
+                System.out.println("Saliendo de la aplicación...");
+                return;
+            }
+        }
     }
 
-    private boolean option(int option, Usuario user) {
-        boolean bucle = false;
+    private boolean mainMenu(Usuario user) {
+        boolean admin = (user.getRol() == Rol.ADMINISTRATOR);
 
-        switch (option) {
-            case 1:
-                user.viewHistory();
-                menu.clearConsole();
-                bucle = false;
-                break;
+        while (true) {
+            int option = admin ? menu.menuAdm() : menu.menuStandard();
 
-            case 2:
-                modifyUser(user);
-                menu.clearConsole();
-                bucle = false;
-                break;
+            switch (option) {
+                case 1:
+                    user.viewHistory();
+                    menu.clearConsole();
+                    break;
 
-            case 3:
-                borrarPorId(option);
-                menu.clearConsole();
-                bucle = false;
-                break;
+                case 2:
+                    modifyUser(user);
+                    menu.clearConsole();
+                    break;
 
-            case 4:
-                bucle = true;
-            break;
-            
-            default:
-                System.out.println("opcion invalida.");
-                menu.clearConsole();
-                break;
+                case 3:
+                    printListUser();
+                    menu.clearConsole();
+                    break;
+
+                case 4:
+                    if (admin) {
+                        addUser();
+                        user.addEvent(createEvento(TipoEvento.CREARUSUARIO));
+                        menu.clearConsole();
+                    } else {
+                        user.addEvent(createEvento(TipoEvento.CERRARSESION));
+                        return false; 
+                    }
+                    break;
+
+                case 5:
+                    if (admin) {
+                        borrarPorId(menu.menuEliminarUser());
+                        user.addEvent(createEvento(TipoEvento.BORROUSUARIO));
+                        menu.clearConsole();
+                    } else {
+                        user.addEvent(createEvento(TipoEvento.CERRARSESION));
+                        return true; 
+                    }
+                    break;
+
+                case 6:
+                    if (admin) {
+                        modifyUser(null);
+                        menu.clearConsole();
+                    } else {
+                        System.out.println("Opción inválida.");
+                    }
+                    break;
+
+                case 7: 
+                    if (admin) {
+                        user.addEvent(createEvento(TipoEvento.CERRARSESION));
+                        return false; 
+                    }
+                    System.out.println("Opción inválida.");
+                    break;
+
+                case 8:
+                    if (admin) {
+                        user.addEvent(createEvento(TipoEvento.CERRARSESION));
+                        return true;
+                    }
+                    System.out.println("Opción inválida.");
+                    break;
+
+                default:
+                    System.out.println("Opción inválida.");
+                    menu.clearConsole();
+                    break;
+            }
         }
-
-        return bucle;
     }
 
     public void addUser() {
@@ -71,7 +120,7 @@ public class Sistema {
         }
     }
 
-    public void printListUser() {
+    private void printListUser() {
         for (Usuario usuario : usuarios) {
             if (usuario == null)
                 continue;
@@ -79,7 +128,7 @@ public class Sistema {
         }
     }
 
-    public Usuario signIn() {
+    private Usuario signIn() {
         final int MAX_ATTEMPTS = 3;
         int attempts = 0;
 
@@ -100,6 +149,7 @@ public class Sistema {
                     if (user.getPassword() != null && user.getPassword().equals(password)) {
                         System.out.println("Inicio de sesión exitoso.");
                         user.addEvent(createEvento(TipoEvento.INICIOSESION));
+                        menu.clearConsole();
                         return user;
                     } else {
                         break;
@@ -155,13 +205,17 @@ public class Sistema {
             case BORROUSUARIO:
                 return new Evento("Borrado de usuario", "Se elimino un usuario desde esta cuenta");
 
+            case CREARUSUARIO:
+                return new Evento("Usuario Creado", "Se creo usuario");
+
+
             default:
                 return new Evento("error", "error");
         }
     }
 
     private Usuario userMaster() {
-        return new Usuario("administrador", 1000, "admi", "1234", Rol.STANDARD);
+        return new Usuario("administrador", 1000, "admi", "1234", Rol.ADMINISTRATOR);
     }
 
     private void modifyUser(Usuario user) {
