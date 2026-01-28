@@ -1,4 +1,4 @@
-package model.app;
+package app;
 import service.Sistema;
 
 public class App {
