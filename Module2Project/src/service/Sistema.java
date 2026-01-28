@@ -71,6 +71,7 @@ public class Sistema {
                         menu.clearConsole();
                     } else {
                         user.addEvent(createEvento(TipoEvento.CERRARSESION));
+                        menu.clearConsole();
                         return false; 
                     }
                     break;
@@ -82,6 +83,7 @@ public class Sistema {
                         menu.clearConsole();
                     } else {
                         user.addEvent(createEvento(TipoEvento.CERRARSESION));
+                        menu.clearConsole();
                         return true; 
                     }
                     break;
@@ -98,6 +100,7 @@ public class Sistema {
                 case 7: //SALIR
                     if (admin) {
                         user.addEvent(createEvento(TipoEvento.CERRARSESION));
+                        menu.clearConsole();
                         return false; 
                     }
                     System.out.println("Opción inválida.");
@@ -106,6 +109,7 @@ public class Sistema {
                 case 8://CERRAR APP
                     if (admin) {
                         user.addEvent(createEvento(TipoEvento.CERRARSESION));
+                        menu.clearConsole();
                         return true;
                     }
                     System.out.println("Opción inválida.");
