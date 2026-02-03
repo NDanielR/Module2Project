@@ -1,4 +1,5 @@
 package ui;
+
 import java.util.Scanner;
 
 import model.Rol;
@@ -73,6 +74,21 @@ public class Menu {
         System.out.println("Ingresa tu contraseña:");
         String password = scn.nextLine();
         return password;
+    }
+
+    public int enterUser() {
+        System.out.println("Seleccione el usuario que desea modificar");
+        while (true) {
+            String input = scn.nextLine().trim();
+            try {
+                int option = Integer.parseInt(input);
+                if (option >= 1 && option <= 50)
+                    return option;
+                System.out.println("Opción fuera de rango.");
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Debe ser un número entre 1 y 50.");
+            }
+        }
     }
 
     public int menuAdm() {
@@ -220,7 +236,7 @@ public class Menu {
 
     public int menuEliminarUser() {
         while (true) {
-            System.out.print("Ingresa nuevo ID: ");
+            System.out.print("Ingresa index a eliminar: ");
             String s = scn.nextLine().trim();
 
             if (!s.isEmpty() && s.chars().allMatch(Character::isDigit)) {

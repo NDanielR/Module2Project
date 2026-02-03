@@ -1,4 +1,5 @@
 package service;
+
 import model.Evento;
 import model.Rol;
 import model.TipoEvento;
@@ -19,7 +20,7 @@ public class Sistema {
         menu.clearConsole();
 
         while (true) {
-            boolean goLogin = menu.messengerWelcome(); 
+            boolean goLogin = menu.messengerWelcome();
             if (!goLogin) {
                 System.out.println("Saliendo de la aplicación...");
                 return;
@@ -30,7 +31,7 @@ public class Sistema {
                 continue;
             }
 
-            boolean exitApp = mainMenu(user); 
+            boolean exitApp = mainMenu(user);
             if (exitApp) {
                 System.out.println("Saliendo de la aplicación...");
                 return;
@@ -46,7 +47,7 @@ public class Sistema {
 
             switch (option) {
                 case 1:
-                    //historial OK
+                    // historial OK
                     user.viewHistory();
                     menu.clearConsole();
                     break;
@@ -58,13 +59,13 @@ public class Sistema {
                     break;
 
                 case 3:
-                    //buscar usuario OK
+                    // buscar usuario OK
                     printListUser();
                     menu.clearConsole();
                     break;
 
                 case 4:
-                    //agregar usuario OK
+                    // agregar usuario OK
                     if (admin) {
                         addUser();
                         user.addEvent(createEvento(TipoEvento.CREARUSUARIO));
@@ -72,41 +73,43 @@ public class Sistema {
                     } else {
                         user.addEvent(createEvento(TipoEvento.CERRARSESION));
                         menu.clearConsole();
-                        return false; 
+                        return false;
                     }
                     break;
 
-                case 5://TODO: VERIFICAR SI FUNCIONA
+                case 5:// eliminar usuario OK
                     if (admin) {
-                        borrarPorId(menu.menuEliminarUser());
+                        printListUser();
+                        deleteIndex(menu.menuEliminarUser());
                         user.addEvent(createEvento(TipoEvento.BORROUSUARIO));
                         menu.clearConsole();
                     } else {
                         user.addEvent(createEvento(TipoEvento.CERRARSESION));
                         menu.clearConsole();
-                        return true; 
+                        return true;
                     }
                     break;
 
-                case 6://FIXME: NO FUNCIONA FALTA SELECCIONAR Y MODIFICAR
+                case 6:// MODIFICAR USUARIO
                     if (admin) {
-                        modifyUser(null);
+                        printListUser();
+                        modifyUser((selectUser(menu.enterUser())));
                         menu.clearConsole();
                     } else {
                         System.out.println("Opción inválida.");
                     }
                     break;
 
-                case 7: //SALIR
+                case 7: // SALIR
                     if (admin) {
                         user.addEvent(createEvento(TipoEvento.CERRARSESION));
                         menu.clearConsole();
-                        return false; 
+                        return false;
                     }
                     System.out.println("Opción inválida.");
                     break;
 
-                case 8://CERRAR APP
+                case 8:// CERRAR APP
                     if (admin) {
                         user.addEvent(createEvento(TipoEvento.CERRARSESION));
                         menu.clearConsole();
@@ -136,10 +139,12 @@ public class Sistema {
     }
 
     private void printListUser() {
+        int i = 0;
         for (Usuario usuario : usuarios) {
-            if (usuario == null)
-                continue;
-            System.out.println(usuario.toString());
+            if (usuario != null) {
+                System.out.println(i + ": " + usuario.toString());
+            }
+            i++;
         }
     }
 
@@ -188,8 +193,9 @@ public class Sistema {
         return null;
     }
 
-    public void setUser(int index, Usuario user) {
-        usuarios[index] = user;
+    public Usuario selectUser(int index) {
+        var user = usuarios[index];
+        return user;
     }
 
     private boolean registerUser(Usuario nuevoUsuario) {
@@ -224,7 +230,6 @@ public class Sistema {
 
             case CREARUSUARIO:
                 return new Evento("Usuario Creado", "Se creo usuario");
-
 
             default:
                 return new Evento("error", "error");
@@ -267,14 +272,8 @@ public class Sistema {
 
     }
 
-    private boolean borrarPorId(int id) {
-        for (int i = 0; i < usuarios.length; i++) {
-            Usuario u = usuarios[i];
-            if (u != null && u.getId() != null && u.getId() == id) {
-                usuarios[i] = null;
-                return true;
-            }
-        }
+    private boolean deleteIndex(int index) {
+        usuarios[index] = null;
         return false;
     }
 
